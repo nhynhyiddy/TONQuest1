@@ -13,7 +13,7 @@ export const nftCollectionAddress = Address.parse('EQDf6HCOggN_ZGL6YsYleN6mDiclQ
 
 export async function getCollectionData() {
 
-	let { stack } = await toncenter.callGetMethod(
+	let { stack, gas_used } = await toncenter.runMethod(
 		nftCollectionAddress, 
 		'get_collection_data'
 	);
@@ -25,6 +25,7 @@ export async function getCollectionData() {
 	console.log('Next item index:', nextItemIndex.toString());
 	console.log('Content root cell:', contentRoot);
 	console.log('Collection owner adress:', owner);
+	console.log('Gas used:', gas_used);
 
 	return nextItemIndex;
 }

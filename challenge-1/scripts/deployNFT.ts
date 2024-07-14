@@ -14,7 +14,7 @@ async function deployItem() {
  
     // 1) Your address - NFT will store owner address, so be the owner!!
     // You can find you testnet Address in your Wallet
-    const ownerAddress = Address.parse('UQApA79Qt8VEOeTfHu9yKRPdJ_dADvspqh5BqV87PgWD998f');
+    const ownerAddress = Address.parse('0QDxnHeLH_ZcbtIGrWnECtgl_Jhmu7_Z5XCSLSlpkRQCrTDJ');
     //const ownerAddress = Address.parse('input your adress here');
     //take next Item  
     
@@ -66,7 +66,7 @@ async function deployItem() {
         bin: readyBody.toBoc({idx: false}).toString("base64"),
     });
 
-
+    console.log(deployLink)
 
     qrcode.generate(deployLink, {small: true }, (qr) => {
         console.log(qr);

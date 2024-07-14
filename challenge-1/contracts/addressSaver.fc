@@ -1,0 +1,106 @@
+#include "imports/stdlib.fc";
+#include "imports/op-codes.fc";
+#include "imports/params.fc";
+;; Address saver smart contract
+;; The smart contract will save 2 addresses
+;; - remember the address set by the manager 
+;; and report it to anyone who requests it
+
+;; op 1: from manager should save the received address in storage.
+;; op 2: from any address it should respond to the sender with a message body containing:
+;; - op equal to 3
+;; - the same query_id
+;; - Manager's address
+;; - The address that was remembered or addr_none if not set
+;; - The TON value attached to the message minus the processing fee.
+;; When the smart contract receives any other message, it should throw an exception.
+
+;; storage scheme
+;; - manager address and address to be saved
+
+(slice, slice) load_data () inline {
+  var ds = get_data().begin_parse();
+  return (ds~load_msg_addr(), ds~load_msg_addr());
+}
+
+;; specify the impure specifier if the function can modify the contract's storage
+() save_data (slice manager_address, slice memorized_address) impure inline {
+  set_data(begin_cell()
+    .store_slice(manager_address)
+    .store_slice(memorized_address)
+    .end_cell());
+}
+
+slice parse_sender_address (cell in_msg_full) inline {
+  var cs = in_msg_full.begin_parse();
+  var flags = cs~load_uint(4);
+  slice sender_address = cs~load_msg_addr();
+  return sender_address;
+  
+}
+
+;; low level call to check if 2 slices are the same.
+int equal_slices (slice a, slice b) asm "SDEQ";
+
+() recv_internal(int balance, int msg_value, cell in_msg_full, slice in_msg_body)  {
+    if (in_msg_body.slice_empty?()) { ;; ignore empty messages
+        return ();
+    }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    int op = in_msg_body~load_int(32);
+    int query_id = in_msg_body~load_uint(64);
+    var sender_address = parse_sender_address(in_msg_full);
+    if (flags & 1) { ;; ignore all bounced messages
+        return ();
+    }
+    ;; op 1: from manager should save the received address in storage.
+    if(op == 1) {
+      (slice manager_address, slice memorized_address) = load_data();
+      throw_if(1001, ~ equal_slices(manager_address, sender_address));
+      slice new_memorized_address = in_msg_body~load_msg_addr();
+      save_data(manager_address, new_memorized_address);
+    }
+    ;; op 2: from any address it should respond to the sender with a message body containing:
+    ;; - op equal to 3
+    ;; - the same query_id
+    ;; - Manager's address
+    ;; - The address that was remembered or addr_none if not set
+    ;; - The TON value attached to the message minus the processing fee.
+    elseif(op == 2) {
+      (slice manager_address, slice memorized_address) = load_data();
+      var msg_body_cell = begin_cell()
+            .store_uint(3, 32)
+            .store_uint(query_id, 64)
+            .store_slice(manager_address)
+            .store_slice(memorized_address)
+            .end_cell();
+
+      var msg = begin_cell()
+            .store_uint(0x10, 6)
+            .store_slice(sender_address)
+            .store_grams(0)
+            .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+            ;; .store_uint(3, 32)
+            ;; .store_uint(query_id, 64)
+            ;; .store_slice(manager_address)
+            ;; .store_slice(memorized_address)
+            .store_ref(msg_body_cell)
+        .end_cell();
+      ;; - The TON value attached to the message minus the processing fee.
+      send_raw_message(msg, 64);
+    } else {
+      throw(3);
+    }
+
+    
+}
+
+(slice, slice) get_addresses() method_id {
+   (slice manager_address, slice memorized_address) = load_data();
+    return (manager_address, memorized_address);
+}
+  ;; code will be here
+
+    
+
