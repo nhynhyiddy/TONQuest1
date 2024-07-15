@@ -1,0 +1,130 @@
+#include "imports/stdlib.fc";
+#include "imports/op-codes.fc";
+#include "imports/params.fc";
+;; Hash map smart contract
+
+;; The contract should:
+;; 1. add a new key/value entry to its data:
+;; 32-bit uint op equal to 1
+;; 64-bit uint query_id
+;; 256-bit uint key
+;; 64-bit valid_until unixtime
+;; remaining slice value
+;; 2. removing outdated data has the following structure: 
+;; - 32-bit unsigned op equal to 2 
+;; - 64-bit unsigned query_id 
+;; When receiving such a message, the contract should remove all outdated entries from its data (with valid_until < now()). 
+;; It should also check that there are no extra data in the message other than the 32-bit unsigned op and 64-bit unsigned query_id.
+;; For all other internal messages, an error should be thrown.
+;; 3. A Get method get_key should be implemented, 
+;; params: 256-bit unsigned key 
+;; return: 
+;; - an integer valid_until 
+;; - a slice value for that key. 
+;; If there is no entry for that key, an error should be thrown.
+
+;; Important! We assume that the contract starts with an empty storage.
+;; storage scheme
+;; key/value pairs
+
+cell load_data() {    
+	cell data = get_data();
+	slice ds = data.begin_parse();
+	if (ds.slice_bits() == 0) {
+		return new_dict();
+	} else {
+        ;; cell dic = ds~load_dict();
+        ;; dic~udict_set(256, 100, my_address());
+        ;; (slice val, int k) = dic.udict_get?(256,1);
+    
+    
+        ;; return dic;
+		return ds~load_dict();
+	}
+}
+
+() recv_internal(int balance, int msg_value, cell in_msg_full, slice in_msg_body)  {
+    if (in_msg_body.slice_empty?()) { ;; ignore empty messages
+        return ();
+    }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    int op = in_msg_body~load_int(32);
+    int query_id = in_msg_body~load_uint(64);
+    ;; cell data = get_data();
+	;; slice ds = data.begin_parse();
+	cell dic = load_data();
+	;; cell dic = ds.slice_bits() == 0 ? new_dict() : ds~load_dict();
+    if (flags & 1) { ;; ignore all bounced messages
+        return ();
+    }
+    ;; op 1: add a new key/value entry to its data:
+    ;; 32-bit uint op equal to 1
+    ;; 64-bit uint query_id
+    ;; 256-bit uint key
+    ;; 64-bit valid_until unixtime
+    ;; remaining slice value
+
+    if(op == 1) {
+        int key = in_msg_body~load_uint(256);
+    
+        dic~udict_set(256, key, in_msg_body);
+    
+        set_data(begin_cell().store_dict(dic).end_cell());
+        ;; set_data(dic);
+        ;; slice ds = get_data().begin_parse();
+    
+        return();
+    }
+    ;; 2. removing outdated data has the following structure: 
+    ;; - 32-bit unsigned op equal to 2 
+    ;; - 64-bit unsigned query_id 
+    ;; When receiving such a message, the contract should remove all outdated entries from its data (with valid_until < now()). 
+    ;; It should also check that there are no extra data in the message other than the 32-bit unsigned op and 64-bit unsigned query_id.
+    ;; For all other internal messages, an error should be thrown.
+    if(op == 2) {
+        in_msg_body.end_parse(); ;;check that there are no extra data in the message. this throws error if otherwise.
+        int now = now();
+        int key = -1;
+        do {
+            (key, slice cs, int f) = dic.udict_get_next?(256, key); ;;256 means key is 256 bit.
+            if(f) {
+                int validTill = cs~load_uint(64);
+
+                if(validTill < now) {
+                    dic~udict_delete?(256, key);
+                }
+            }
+	    } until(~ f);
+        if (dic.dict_empty?()) {
+		    set_data(begin_cell().end_cell()); ;; set empty cell if dict is empty
+        } else {
+            set_data(begin_cell().store_dict(dic).end_cell());
+        }
+        return();
+    }
+    throw(1001);
+    
+
+    
+}
+;; params: 256-bit unsigned key 
+;; return: 
+;; - an integer valid_until 
+;; - a slice value for that key. 
+;; If there is no entry for that key, an error should be thrown.
+
+(int, slice) get_key(int key) method_id {
+    cell dic = load_data();
+
+    
+    (slice payload, int success) = dic.udict_get?(256, key);
+    throw_unless(98, success);
+    int valid_until = payload~load_uint(64);
+	return (valid_until, payload);
+    
+}
+
+
+    
+

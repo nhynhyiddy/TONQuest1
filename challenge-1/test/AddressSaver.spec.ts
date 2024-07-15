@@ -4,6 +4,7 @@ import { Address, Cell, TransactionComputeVm, TransactionDescriptionGeneric, beg
 import "@ton/test-utils"; // register matchers
 import * as fs from "fs";
 import { randomAddress } from "@ton/test-utils";
+import { compile } from '@ton/blueprint';
 
 
 let contract: SandboxContract<AddressSaver>;
@@ -12,7 +13,9 @@ let blockchain: Blockchain;
 
 describe("AddressSaver tests", () => {
 
-    
+    beforeAll(async () => {
+        let _code = await compile('AddressSaver');
+    });
     
     beforeEach(async () => {
         blockchain = await Blockchain.create();

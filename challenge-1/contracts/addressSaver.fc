@@ -40,7 +40,7 @@ slice parse_sender_address (cell in_msg_full) inline {
 }
 
 ;; low level call to check if 2 slices are the same.
-int equal_slices (slice a, slice b) asm "SDEQ";
+;; int equal_slices (slice a, slice b) asm "SDEQ";
 
 () recv_internal(int balance, int msg_value, cell in_msg_full, slice in_msg_body)  {
     if (in_msg_body.slice_empty?()) { ;; ignore empty messages
