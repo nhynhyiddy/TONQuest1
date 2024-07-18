@@ -28,6 +28,10 @@
   "scripts": {
     "getcol": "ts-node ./scripts/getCollectionData.ts",
     "deploynft": "ts-node ./scripts/deployNFT.ts",
-    "test": "jest"
+    "test": "jest",
+    "ui": "blueprint scaffold && cd dapp && npm run dev"
+  },
+  "dependencies": {
+    "blueprint-scaffold": "^1.1.1"
   }
 }

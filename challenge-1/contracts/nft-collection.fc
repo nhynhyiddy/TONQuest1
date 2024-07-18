@@ -149,7 +149,7 @@ slice get_nft_address_by_index(int index) method_id {
     cell state_init = calculate_nft_item_state_init(index, nft_item_code);
     return calculate_nft_item_address(0, state_init);
 }
-
+;; returns the numerator, denominator, and address to send royalties to
 (int, int, slice) royalty_params() method_id {
      var (_, _, _, _, royalty) = load_data();
      slice rs = royalty.begin_parse();

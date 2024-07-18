@@ -1,5 +1,7 @@
-import { TonClient } from 'ton';
-import { Address } from 'ton-core';
+import { Address } from '@ton/core';
+import { TonClient } from '@ton/ton';
+
+
 
 export const toncenter = new TonClient({
 	endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
@@ -12,7 +14,7 @@ export const nftCollectionAddress = Address.parse('EQDf6HCOggN_ZGL6YsYleN6mDiclQ
 
 export async function getNextItem() {
 
-	let { stack } = await toncenter.callGetMethod(
+	let { stack } = await toncenter.runMethod(
 		nftCollectionAddress, 
 		'get_collection_data'
 	);

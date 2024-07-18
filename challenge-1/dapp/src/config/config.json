@@ -1,0 +1,263 @@
+{
+  "AddressSaver": {
+    "defaultAddress": "",
+    "tabName": "",
+    "sendFunctions": {
+      "sendDeploy": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendChangeAddress": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          },
+          "queryId": {
+            "fieldTitle": ""
+          },
+          "newAddress": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendRequestAddress": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          },
+          "queryId": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    },
+    "getFunctions": {
+      "getCurrentSavedAddress": {
+        "tabName": "",
+        "params": {},
+        "outNames": {}
+      }
+    },
+    "definedTypes": {
+      "AddressSaverConfig": {
+        "shownName": "",
+        "properties": {
+          "manager": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    }
+  },
+  "Hashmap": {
+    "defaultAddress": "",
+    "tabName": "",
+    "sendFunctions": {
+      "sendDeploy": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendSet": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          },
+          "opts": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendClearOldValues": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          },
+          "queryId": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    },
+    "getFunctions": {
+      "getKey": {
+        "tabName": "",
+        "params": {
+          "key": {
+            "fieldTitle": ""
+          }
+        },
+        "outNames": {}
+      }
+    },
+    "definedTypes": {
+      "HashmapConfig": {
+        "shownName": "",
+        "properties": {
+          "0": {
+            "fieldTitle": ""
+          },
+          "1": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    }
+  },
+  "JettonMinter": {
+    "defaultAddress": "",
+    "tabName": "",
+    "sendFunctions": {
+      "sendDeploy": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendMint": {
+        "tabName": "",
+        "params": {
+          "to": {
+            "fieldTitle": ""
+          },
+          "jetton_amount": {
+            "fieldTitle": ""
+          },
+          "forward_ton_amount": {
+            "fieldTitle": ""
+          },
+          "total_ton_amount": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendDiscovery": {
+        "tabName": "",
+        "params": {
+          "owner": {
+            "fieldTitle": ""
+          },
+          "include_address": {
+            "fieldTitle": ""
+          },
+          "value": {
+            "fieldTitle": "",
+            "overrideWithDefault": false
+          }
+        }
+      },
+      "sendChangeAdmin": {
+        "tabName": "",
+        "params": {
+          "newOwner": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "sendChangeContent": {
+        "tabName": "",
+        "params": {
+          "content": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    },
+    "getFunctions": {
+      "getWalletAddress": {
+        "tabName": "",
+        "params": {
+          "owner": {
+            "fieldTitle": ""
+          }
+        },
+        "outNames": {}
+      },
+      "getJettonData": {
+        "tabName": "",
+        "params": {},
+        "outNames": {}
+      },
+      "getTotalSupply": {
+        "tabName": "",
+        "params": {},
+        "outNames": {}
+      },
+      "getAdminAddress": {
+        "tabName": "",
+        "params": {},
+        "outNames": {}
+      },
+      "getContent": {
+        "tabName": "",
+        "params": {},
+        "outNames": {}
+      }
+    },
+    "definedTypes": {
+      "JettonMinterConfig": {
+        "shownName": "",
+        "properties": {
+          "admin": {
+            "fieldTitle": ""
+          },
+          "content": {
+            "fieldTitle": ""
+          },
+          "wallet_code": {
+            "fieldTitle": ""
+          }
+        }
+      },
+      "JettonMinterContent": {
+        "shownName": "",
+        "properties": {
+          "type": {
+            "fieldTitle": ""
+          },
+          "uri": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    }
+  },
+  "Proxy": {
+    "defaultAddress": "",
+    "tabName": "",
+    "sendFunctions": {
+      "sendDeploy": {
+        "tabName": "",
+        "params": {
+          "value": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    },
+    "getFunctions": {},
+    "definedTypes": {
+      "ProxyConfig": {
+        "shownName": "",
+        "properties": {
+          "owner": {
+            "fieldTitle": ""
+          }
+        }
+      }
+    }
+  }
+}

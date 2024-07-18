@@ -1,0 +1,246 @@
+{
+  "AddressSaver": {
+    "sendFunctions": {
+      "sendDeploy": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        }
+      },
+      "sendChangeAddress": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        },
+        "queryId": {
+          "type": "bigint",
+          "optional": false
+        },
+        "newAddress": {
+          "type": "Address",
+          "optional": false
+        }
+      },
+      "sendRequestAddress": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        },
+        "queryId": {
+          "type": "bigint",
+          "optional": false
+        }
+      }
+    },
+    "getFunctions": {
+      "getCurrentSavedAddress": {}
+    },
+    "path": "./wrappers/AddressSaver.ts",
+    "deploy": {
+      "canBeCreatedFromConfig": true,
+      "configType": {
+        "manager": {
+          "type": "Address",
+          "optional": false
+        }
+      },
+      "codeHex": "b5ee9c724101050100a3000114ff00f4a413f4bcf2c80b01020162020401bed06c2220c700915be021d0d3033001d21fd33f04d0d30331fa40300371b0925f04e021c0018e3633c0028e2ced44d0fa40fa403073c8cb1f14cb3f01cf1658cf16c9708010c8cb055003cf1622fa0212cb6accc98040fb00935bf203e2e30d0300405bed44d0fa40fa4030305202c705b3f2d3e901fa4030c858cf1601cf16c9ed540015a15f37da89a1f481f4806150e1cf51"
+    },
+    "definedTypes": {
+      "AddressSaverConfig": {
+        "manager": {
+          "type": "Address",
+          "optional": false
+        }
+      }
+    }
+  },
+  "Hashmap": {
+    "sendFunctions": {
+      "sendDeploy": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        }
+      },
+      "sendSet": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        },
+        "opts": {
+          "type": "{\n  queryId: bigint;\n  key: bigint;\n  value: Slice;\n  validUntil: bigint;\n}",
+          "optional": false
+        }
+      },
+      "sendClearOldValues": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        },
+        "queryId": {
+          "type": "bigint",
+          "optional": false
+        }
+      }
+    },
+    "getFunctions": {
+      "getKey": {
+        "key": {
+          "type": "bigint",
+          "optional": false
+        }
+      }
+    },
+    "path": "./wrappers/Hashmap.ts",
+    "deploy": {
+      "canBeCreatedFromConfig": true,
+      "codeHex": "b5ee9c724101060100ae000114ff00f4a413f4bcf2c80b0102016202050202ce030400e146c2220c700915be001d0d3033001d21fd33f31f0020371b0925f03e021c0019e31d3ff028307f416c8f400c9ed54e001c0028e37d1f8237f8e1f228307f47c6fa5208e1002d33f3023b99852048307f45b3003de9132e201b3e65b206e9530c8c9ed5496c8f400c9ed54e2e05bf2c3e98001f4ed44d020d749c00092306de0f404308001fa1e7d3e005060fe81cdf43e5c0c5a67f2672b28f"
+    },
+    "definedTypes": {
+      "HashmapConfig": "{}"
+    }
+  },
+  "JettonMinter": {
+    "sendFunctions": {
+      "sendDeploy": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        }
+      },
+      "sendMint": {
+        "to": {
+          "type": "Address",
+          "optional": false
+        },
+        "jetton_amount": {
+          "type": "bigint",
+          "optional": false
+        },
+        "forward_ton_amount": {
+          "type": "bigint",
+          "optional": false
+        },
+        "total_ton_amount": {
+          "type": "bigint",
+          "optional": false
+        }
+      },
+      "sendDiscovery": {
+        "owner": {
+          "type": "Address",
+          "optional": false
+        },
+        "include_address": {
+          "type": "boolean",
+          "optional": false
+        },
+        "value": {
+          "type": "bigint",
+          "optional": false,
+          "defaultValue": "toNano('0.1')"
+        }
+      },
+      "sendChangeAdmin": {
+        "newOwner": {
+          "type": "Address",
+          "optional": false
+        }
+      },
+      "sendChangeContent": {
+        "content": {
+          "type": "Cell",
+          "optional": false
+        }
+      }
+    },
+    "getFunctions": {
+      "getWalletAddress": {
+        "owner": {
+          "type": "Address",
+          "optional": false
+        }
+      },
+      "getJettonData": {},
+      "getTotalSupply": {},
+      "getAdminAddress": {},
+      "getContent": {}
+    },
+    "path": "./wrappers/JettonMinter.ts",
+    "deploy": {
+      "canBeCreatedFromConfig": true,
+      "configType": {
+        "admin": {
+          "type": "Address",
+          "optional": false
+        },
+        "content": {
+          "type": "Cell",
+          "optional": false
+        },
+        "wallet_code": {
+          "type": "Cell",
+          "optional": false
+        }
+      },
+      "codeHex": "b5ee9c7241020b010001ed000114ff00f4a413f4bcf2c80b0102016202080202cc030703efd9910e38048adf068698180b8d848adf07d201800e98fe99ff6a2687d007d206a6a18400aa9385d47181a9aa8aae382f9702480fd207d006a18106840306b90fd001812881a28217804502a906428027d012c678b666664f6aa7041083deecbef29385d71811a92e001f1811802600271812f82c207f978404050600fe3603fa00fa40f82854120870542013541403c85004fa0258cf1601cf16ccc922c8cb0112f400f400cb00c9f9007074c8cb02ca07cbffc9d05008c705f2e04a12a1035024c85004fa0258cf16ccccc9ed5401fa403020d70b01c3008e1f8210d53276db708010c8cb055003cf1622fa0212cb6acb1fcb3fc98042fb00915be200303515c705f2e049fa403059c85004fa0258cf16ccccc9ed54002e5143c705f2e049d43001c85004fa0258cf16ccccc9ed540093dfc142201b82a1009aa0a01e428027d012c678b00e78b666491646580897a007a00658064907c80383a6465816503e5ffe4e83bc00c646582ac678b28027d0109e5b589666664b8fd80402037a60090a007dadbcf6a2687d007d206a6a183618fc1400b82a1009aa0a01e428027d012c678b00e78b666491646580897a007a00658064fc80383a6465816503e5ffe4e840001faf16f6a2687d007d206a6a183faa9040788b22c0"
+    },
+    "definedTypes": {
+      "JettonMinterConfig": {
+        "admin": {
+          "type": "Address",
+          "optional": false
+        },
+        "content": {
+          "type": "Cell",
+          "optional": false
+        },
+        "wallet_code": {
+          "type": "Cell",
+          "optional": false
+        }
+      },
+      "JettonMinterContent": {
+        "type": {
+          "type": "0 | 1",
+          "optional": false
+        },
+        "uri": {
+          "type": "string",
+          "optional": false
+        }
+      }
+    }
+  },
+  "Proxy": {
+    "sendFunctions": {
+      "sendDeploy": {
+        "value": {
+          "type": "bigint",
+          "optional": false
+        }
+      }
+    },
+    "getFunctions": {},
+    "path": "./wrappers/Proxy.ts",
+    "deploy": {
+      "canBeCreatedFromConfig": true,
+      "configType": {
+        "owner": {
+          "type": "Address",
+          "optional": false
+        }
+      },
+      "codeHex": "b5ee9c72410102010054000114ff00f4a413f4bcf2c80b01008ad36c2220c700915be001d0d3030171b0915be0fa4030ed44d0fa40305cc705b38e1fc85003cf16c9708010c8cb055004cf1623fa0213cb6a01cf16ccc98040fb00925f03e21a4e115c"
+    },
+    "definedTypes": {
+      "ProxyConfig": {
+        "owner": {
+          "type": "Address",
+          "optional": false
+        }
+      }
+    }
+  }
+}
