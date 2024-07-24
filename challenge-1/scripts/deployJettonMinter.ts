@@ -1,79 +1,60 @@
-import {
-    beginCell, 
-    toNano,
-    Address,
-  } from "ton-core";
-import qs from "qs";
-import qrcode from "qrcode-terminal";
+import { Address, openContract, toNano } from '@ton/core';
+import { JettonMinter, JettonMinterContent, jettonContentToCell, jettonMinterConfigToCell } from '../wrappers/JettonMinter';
+import { compile, NetworkProvider, UIProvider} from '@ton/blueprint';
+import { promptAddress, promptBool, promptUrl, waitForTransaction } from '../wrappers/ui-utils';
+import { TonClient4 } from '@ton/ton';
 
-import {getNextItem} from "./utils";
+const formatUrl = "https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-example-offchain";
 
+const urlPrompt = 'Please specify url pointing to jetton metadata(json):';
 
-async function deployItem() { 
-    /////////////////////////////////////// collect data here ////////////////////////////////////////////
- 
-    // 1) Your address - NFT will store owner address, so be the owner!!
-    // You can find you testnet Address in your Wallet
-    const ownerAddress = Address.parse('0QDxnHeLH_ZcbtIGrWnECtgl_Jhmu7_Z5XCSLSlpkRQCrTDJ');
-    //const ownerAddress = Address.parse('input your adress here');
-    //take next Item  
+export async function run(provider: NetworkProvider) {
+    const ui       = provider.ui();
+    const sender   = provider.sender();
     
-    const itemIndex = await getNextItem();
+    const adminPrompt = `Please specify admin address`;
+    ui.write(`Jetton deployer\nCurrent deployer onli supports off-chain format:${formatUrl}`);
 
-    // no image just json
-    const commonContentUrl = "item.json";
+    let admin      = await promptAddress(adminPrompt, ui, sender.address);
+    ui.write(`Admin address:${admin}\n`);
+    let contentUrl = await promptUrl(urlPrompt, ui);
+    ui.write(`Jetton content url:${contentUrl}`);
 
-    /////////////////////////////////////// Body generation ////////////////////////////////////////////
+    let dataCorrect = false;
+    do {
+        ui.write("Please verify data:\n")
+        ui.write(`Admin:${admin}\n\n`);
+        ui.write('Metadata url:' + contentUrl);
+        dataCorrect = await promptBool('Is everything ok?', ['y','n'], ui);
+        if(!dataCorrect) {
+            const upd = await ui.choose('What do you want to update?', ['Admin', 'Url'], (c) => c);
 
-    const body = beginCell();
-    // op == 1  = deploy single NFT
-    body.storeUint(1, 32);
-    // query_id let it be 0
-    body.storeUint(0, 64);
+            if(upd == 'Admin') {
+                admin = await promptAddress(adminPrompt, ui, sender.address);
+            }
+            else {
+                contentUrl = await promptUrl(urlPrompt, ui);
+            }
+        }
 
-    // index - take next index from file TBD
-    body.storeUint(itemIndex, 64);
+    } while(!dataCorrect);
+
+    const content = jettonContentToCell({type:1,uri:contentUrl});
+
+    const wallet_code = await compile('JettonWallet');
+    const minter = provider.open(JettonMinter.createFromConfig(
+        {
+            admin,
+            content,
+            wallet_code,
+        }, 
+        await compile('JettonMinter'))
+
+    )
+    if (await provider.isContractDeployed(minter.address)) {
+        return console.log("Minter already deployed");
+    }
+    await minter.sendDeploy(sender, toNano(0.95))
+    await provider.waitForDeploy(minter.address, 100, 5000);
     
-    body.storeCoins(toNano("0.05"));
-
-    const nftItemContent = beginCell();
-    nftItemContent.storeAddress(ownerAddress);
-
-    const uriContent = beginCell();
-    uriContent.storeBuffer(Buffer.from(commonContentUrl));
-    nftItemContent.storeRef(uriContent.endCell());
-
-    body.storeRef(nftItemContent.endCell());
-    const readyBody = body.endCell();
-
-
-
-    /////////////////////////////////////// Deploy link //////////////////////////////////////
-
-	console.log("Scan QR code below with your Tonkeeper Wallet")
-
-    const collectionAddress = Address.parse('EQDf6HCOggN_ZGL6YsYleN6mDiclQ_NJOMY-x8G5cTRDOBW4');
-
-    let deployLink =
-    'https://app.tonkeeper.com/transfer/' +
-    collectionAddress.toString({
-        testOnly: true,
-    }) +
-    "?" +
-    qs.stringify({
-        text: "tonspeedrun",
-        amount: toNano("0.1").toString(10),
-        bin: readyBody.toBoc({idx: false}).toString("base64"),
-    });
-
-    console.log(deployLink)
-
-    qrcode.generate(deployLink, {small: true }, (qr) => {
-        console.log(qr);
-    });
-    
-}
-
-export async function run() {
-    await deployItem();
 }

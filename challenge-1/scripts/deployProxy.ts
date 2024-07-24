@@ -1,20 +1,22 @@
 import * as fs from "fs";
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
-import { TonClient, Cell, WalletContractV4, toNano } from "@ton/ton";
+import { TonClient, Cell, WalletContractV4, toNano, TonClient4 } from "@ton/ton";
 import Proxy from "../wrappers/Proxy"; 
+import { NetworkProvider } from "@ton/blueprint";
 
 
-export async function run() {
+export async function run(provider: NetworkProvider) {
   // initialize ton rpc client on testnet
   const endpoint = await getHttpEndpoint({ network: "testnet" });
-  const client = new TonClient({ endpoint });
+  const client = new TonClient({endpoint})
 
   
 // open wallet v4 (notice the correct wallet version here)
 const mnemonic = "program verify topic exile blast wedding exist joke bike notable talk kangaroo young pupil onion food jaguar purchase circle regret above ginger garbage notable";
 const key = await mnemonicToWalletKey(mnemonic.split(" "));
 const wallet = WalletContractV4.create({ publicKey: key.publicKey, workchain: 0 });
+
 if (!await client.isContractDeployed(wallet.address)) {
     return console.log("wallet is not deployed");
 }
